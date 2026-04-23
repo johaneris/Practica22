@@ -28,7 +28,7 @@ fun HeaderSection(
     ) {
         // Saludo personalizado
         Text(
-            text = "Hola, Ana 👋",
+            text = "Hola, Johaneris 👋",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = colorTexto

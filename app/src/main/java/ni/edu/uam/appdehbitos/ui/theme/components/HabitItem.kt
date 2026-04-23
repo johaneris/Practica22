@@ -5,10 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -31,7 +30,8 @@ fun HabitItem(
     colorTexto: Color,
     colorSubtexto: Color,
     colorTarjeta: Color,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    onDelete: () -> Unit
 ) {
     // Animación suave de color cuando el hábito se marca como completado
     val colorFondoActual by animateColorAsState(
@@ -97,6 +97,15 @@ fun HabitItem(
                     }
                 }
             }
+
+            // Botón de eliminar
+            IconButton(onClick = onDelete) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar hábito",
+                    tint = Color.Red.copy(alpha = 0.7f)
+                )
+            }
         }
     }
 }
@@ -109,6 +118,8 @@ fun getCategoriaColor(categoria: String): Color {
         "Salud" -> Color(0xFF2196F3)
         "Estudio" -> Color(0xFFFF9800)
         "Trabajo" -> Color(0xFF9C27B0)
+        "Ejercicio" -> Color(0xFF4CAF50)
+        "Nutrición" -> Color(0xFFF44336)
         else -> Color(0xFF607D8B)
     }
 }

@@ -4,8 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +22,9 @@ import ni.edu.uam.appdehbitos.ui.theme.components.*
 fun DashboardHabitosScreen() {
     // Estado para el modo oscuro/claro (Simulado visualmente)
     var modoOscuro by remember { mutableStateOf(false) }
+
+    // Estado para controlar la visibilidad del diálogo de agregar
+    var mostrarDialogo by remember { mutableStateOf(false) }
 
     // Lista de hábitos iniciales
     val habitos = remember {
@@ -113,19 +115,30 @@ fun DashboardHabitosScreen() {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            habitos.forEachIndexed { index, habito ->
-                HabitItem(
-                    habito = habito,
-                    modoOscuro = modoOscuro,
-                    colorTexto = colorTexto,
-                    colorSubtexto = colorSubtexto,
-                    colorTarjeta = colorTarjeta,
-                    onCheckedChange = { nuevoEstado ->
-                        // Actualización del estado en la lista
-                        habitos[index] = habitos[index].copy(completado = nuevoEstado)
-                    }
+            if (habitos.isEmpty()) {
+                Text(
+                    text = "No tienes hábitos aún. ¡Agrega uno nuevo!",
+                    color = colorSubtexto,
+                    modifier = Modifier.padding(vertical = 20.dp),
+                    fontSize = 16.sp
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+            } else {
+                habitos.forEachIndexed { index, habito ->
+                    HabitItem(
+                        habito = habito,
+                        modoOscuro = modoOscuro,
+                        colorTexto = colorTexto,
+                        colorSubtexto = colorSubtexto,
+                        colorTarjeta = colorTarjeta,
+                        onCheckedChange = { nuevoEstado ->
+                            habitos[index] = habitos[index].copy(completado = nuevoEstado)
+                        },
+                        onDelete = {
+                            habitos.removeAt(index)
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -138,15 +151,22 @@ fun DashboardHabitosScreen() {
             )
         }
 
-        // 5. Botón Flotante Simulado
+        // 5. Botón Flotante
         Box(
             modifier = Modifier.align(Alignment.BottomEnd)
         ) {
             FloatingAddButton(
-                onClick = {
-                    // Acción simulada de añadir un nuevo hábito
-                    val num = habitos.size + 1
-                    habitos.add(Habito("Nuevo hábito $num", "Meta $num", "Salud", false))
+                onClick = { mostrarDialogo = true }
+            )
+        }
+
+        // Diálogo para agregar hábito
+        if (mostrarDialogo) {
+            AddHabitDialog(
+                onDismiss = { mostrarDialogo = false },
+                onConfirm = { nuevoHabito ->
+                    habitos.add(nuevoHabito)
+                    mostrarDialogo = false
                 }
             )
         }
